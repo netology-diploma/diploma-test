@@ -5,3 +5,8 @@ variable "repository" {
 variable "domain" {
   default = "tasenko.ru"
 }
+
+variable "image_family" {
+  type    = string
+  default = "ubuntu-2004-lts"
+}
