@@ -22,4 +22,3 @@ variable "image_family" {
   type    = string
   default = "ubuntu-2004-lts"
 }
-
