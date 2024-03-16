@@ -6,7 +6,20 @@ variable "domain" {
   default = "tasenko.ru"
 }
 
+variable "service_account_key_file" {
+  type    = string
+}
+
+variable "cloud_id" {
+  type    = string
+}
+
+variable "folder_id" {
+  type    = string
+}
+
 variable "image_family" {
   type    = string
   default = "ubuntu-2004-lts"
 }
+
