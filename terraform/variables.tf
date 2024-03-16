@@ -6,9 +6,8 @@ variable "domain" {
   default = "tasenko.ru"
 }
 
-variable "service_account_key_file" {
+variable "YC_SERVICE_ACCOUNT_KEY_FILE" {
   type    = string
-  var     = YC_SERVICE_ACCOUNT_KEY_FILE
 }
 
 variable "cloud_id" {
