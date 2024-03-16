@@ -39,3 +39,13 @@ resource "yandex_compute_instance" "k8s" {
     nat       = true
   }
 }
+
+resource "yandex_vpc_network" "default" {
+  name = "default"
+}
+
+resource "yandex_vpc_subnet" "default-ru-central1-a" {
+  v4_cidr_blocks = ["10.128.0.0/24"]
+  zone           = "ru-central1-a"
+  network_id     = "${yandex_vpc_network.default.id}"
+}
