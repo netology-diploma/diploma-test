@@ -1,9 +1,13 @@
 terraform {
   backend "remote" {
     organization = "fenixcorp"
-
     workspaces {
       prefix = "diploma-test"
+    }
+  }
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
     }
   }
 }
