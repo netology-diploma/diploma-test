@@ -8,6 +8,7 @@ variable "domain" {
 
 variable "service_account_key_file" {
   type    = string
+  var     = YC_SERVICE_ACCOUNT_KEY_FILE
 }
 
 variable "cloud_id" {
