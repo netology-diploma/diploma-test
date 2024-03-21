@@ -18,6 +18,10 @@ variable "folder_id" {
   type    = string
 }
 
+variable "environment" {
+  type    = string
+}
+
 variable "image_family" {
   type    = string
   default = "ubuntu-2004-lts"
