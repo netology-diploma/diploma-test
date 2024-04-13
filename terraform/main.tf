@@ -1,6 +1,7 @@
 resource "yandex_kubernetes_cluster" "diploma" {
   network_id = yandex_vpc_network.default.id
   master {
+    public_ip = true
     master_location {
       zone      = yandex_vpc_subnet.default-ru-central1-a.zone
       subnet_id = yandex_vpc_subnet.default-ru-central1-a.id
