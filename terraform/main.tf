@@ -1,4 +1,5 @@
 resource "yandex_kubernetes_cluster" "diploma" {
+  name = "yandex-k8s-${var.environment}"
   network_id = yandex_vpc_network.default.id
   master {
     public_ip = true
@@ -6,13 +7,19 @@ resource "yandex_kubernetes_cluster" "diploma" {
       zone      = yandex_vpc_subnet.default-ru-central1-a.zone
       subnet_id = yandex_vpc_subnet.default-ru-central1-a.id
    }
+    security_group_ids = [yandex_vpc_security_group.k8s-public-services.id]
   }
   service_account_id      = yandex_iam_service_account.cluster-test.id
   node_service_account_id = yandex_iam_service_account.cluster-test.id
     depends_on = [
-      yandex_resourcemanager_folder_iam_member.editor,
-      yandex_resourcemanager_folder_iam_member.images-puller
-    ]
+      yandex_resourcemanager_folder_iam_member.k8s-clusters-agent,
+      yandex_resourcemanager_folder_iam_member.vpc-public-admin,
+      yandex_resourcemanager_folder_iam_member.images-puller,
+      yandex_resourcemanager_folder_iam_member.encrypterDecrypter
+  ]
+  kms_provider {
+    key_id = yandex_kms_symmetric_key.kms-key.id
+  }
 }
 
 resource "yandex_kubernetes_node_group" "diploma-nodes" {
@@ -55,18 +62,35 @@ resource "yandex_iam_service_account" "cluster-test" {
  description = "Main cluster SA"
 }
 
-resource "yandex_resourcemanager_folder_iam_member" "editor" {
- # Сервисному аккаунту назначается роль "editor".
+resource "yandex_resourcemanager_folder_iam_member" "k8s-clusters-agent" {
  folder_id = var.folder_id
- role      = "editor"
+ role      = "k8s.clusters.agent"
+ member    = "serviceAccount:${yandex_iam_service_account.cluster-test.id}"
+}
+
+resource "yandex_resourcemanager_folder_iam_member" "vpc-public-admin" {
+ folder_id = var.folder_id
+ role      = "vpc.publicAdmin"
  member    = "serviceAccount:${yandex_iam_service_account.cluster-test.id}"
 }
 
 resource "yandex_resourcemanager_folder_iam_member" "images-puller" {
- # Сервисному аккаунту назначается роль "container-registry.images.puller".
- folder_id = var.folder_id
- role      = "container-registry.images.puller"
- member    = "serviceAccount:${yandex_iam_service_account.cluster-test.id}"
+  folder_id = var.folder_id
+  role      = "container-registry.images.puller"
+  member    = "serviceAccount:${yandex_iam_service_account.cluster-test.id}"
+}
+
+resource "yandex_resourcemanager_folder_iam_member" "encrypterDecrypter" {
+  folder_id = var.folder_id
+  role      = "kms.keys.encrypterDecrypter"
+  member    = "serviceAccount:${yandex_iam_service_account.cluster-test.id}"
+}
+
+resource "yandex_kms_symmetric_key" "kms-key" {
+  # Ключ Yandex Key Management Service для шифрования важной информации, такой как пароли, OAuth-токены и SSH-ключи.
+  name              = "kms-key"
+  default_algorithm = "AES_128"
+  rotation_period   = "8760h" # 1 год.
 }
 
 resource "yandex_vpc_security_group" "k8s-public-services" {
