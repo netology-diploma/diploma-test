@@ -15,6 +15,29 @@ resource "yandex_kubernetes_cluster" "diploma" {
     ]
 }
 
+resource "yandex_kubernetes_node_group" "diploma-nodes" {
+  cluster_id = yandex_kubernetes_cluster.diploma.id
+  name       = "diploma"
+  instance_template {
+    name       = "test-{instance.short_id}"
+    platform_id = "standard-v1"
+    network_acceleration_type = "standard"
+    container_runtime {
+      type = "containerd"
+    }
+    labels {
+      diploma-env = test
+    }
+  }
+  scale_policy {
+    auto_scale {
+      initial = 1
+      max     = 3
+      min     = 1
+    }
+  }
+}
+
 resource "yandex_vpc_network" "default" {
   name = "default"
 }
@@ -22,7 +45,7 @@ resource "yandex_vpc_network" "default" {
 resource "yandex_vpc_subnet" "default-ru-central1-a" {
   v4_cidr_blocks = ["10.128.0.0/24"]
   zone           = "ru-central1-a"
-  network_id     = "${yandex_vpc_network.default.id}"
+  network_id     = yandex_vpc_network.default.id
 }
 
 resource "yandex_iam_service_account" "cluster-test" {
