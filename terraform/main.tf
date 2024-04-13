@@ -31,14 +31,14 @@ resource "yandex_iam_service_account" "cluster-test" {
 
 resource "yandex_resourcemanager_folder_iam_member" "editor" {
  # Сервисному аккаунту назначается роль "editor".
- folder_id = "test"
+ folder_id = var.folder_id
  role      = "editor"
  member    = "serviceAccount:${yandex_iam_service_account.cluster-test.id}"
 }
 
 resource "yandex_resourcemanager_folder_iam_member" "images-puller" {
  # Сервисному аккаунту назначается роль "container-registry.images.puller".
- folder_id = "test"
+ folder_id = var.folder_id
  role      = "container-registry.images.puller"
  member    = "serviceAccount:${yandex_iam_service_account.cluster-test.id}"
 }
