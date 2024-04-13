@@ -1,25 +1,17 @@
-resource "yandex_compute_instance" "k8s" {
-  count       = 1
-  name        = "k8s-0${count.index+1}"
-
-  resources {
-    cores         = 2
-    memory        = 2
-    core_fraction = 5
+resource "yandex_kubernetes_cluster" "diploma" {
+  network_id = yandex_vpc_network.default.id
+  master {
+    master_location {
+      zone      = yandex_vpc_subnet.default-ru-central1-a.zone
+      subnet_id = yandex_vpc_subnet.default-ru-central1-a.id
+   }
   }
-  boot_disk {
-    initialize_params {
-      image_id = data.yandex_compute_image.my_image.image_id
-      size     = 5
-    }
-  }
-  scheduling_policy {
-    preemptible = true
-  }
-  network_interface {
-    subnet_id = yandex_vpc_subnet.default-ru-central1-a.id
-    nat       = true
-  }
+  service_account_id      = yandex_iam_service_account.cluster-test.id
+  node_service_account_id = yandex_iam_service_account.cluster-test.id
+    depends_on = [
+      yandex_resourcemanager_folder_iam_member.editor,
+      yandex_resourcemanager_folder_iam_member.images-puller
+    ]
 }
 
 resource "yandex_vpc_network" "default" {
@@ -30,4 +22,23 @@ resource "yandex_vpc_subnet" "default-ru-central1-a" {
   v4_cidr_blocks = ["10.128.0.0/24"]
   zone           = "ru-central1-a"
   network_id     = "${yandex_vpc_network.default.id}"
+}
+
+resource "yandex_iam_service_account" "cluster-test" {
+ name        = cluster-test
+ description = "Main cluster SA"
+}
+
+resource "yandex_resourcemanager_folder_iam_member" "editor" {
+ # Сервисному аккаунту назначается роль "editor".
+ folder_id = "test"
+ role      = "editor"
+ member    = "serviceAccount:${yandex_iam_service_account.cluster-test.id}"
+}
+
+resource "yandex_resourcemanager_folder_iam_member" "images-puller" {
+ # Сервисному аккаунту назначается роль "container-registry.images.puller".
+ folder_id = "test"
+ role      = "container-registry.images.puller"
+ member    = "serviceAccount:${yandex_iam_service_account.cluster-test.id}"
 }
