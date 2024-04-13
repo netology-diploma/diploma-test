@@ -21,6 +21,11 @@ resource "yandex_kubernetes_node_group" "diploma-nodes" {
   instance_template {
     name       = "test-{instance.short_id}"
     platform_id = "standard-v1"
+    resources {
+      memory = 2
+      cores  = 2
+      core_fraction = 5
+    }
     network_acceleration_type = "standard"
     container_runtime {
       type = "containerd"
