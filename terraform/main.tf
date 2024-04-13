@@ -25,9 +25,6 @@ resource "yandex_kubernetes_node_group" "diploma-nodes" {
     container_runtime {
       type = "containerd"
     }
-    labels {
-      diploma-env = test
-    }
   }
   scale_policy {
     auto_scale {
