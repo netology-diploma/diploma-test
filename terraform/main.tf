@@ -25,7 +25,7 @@ resource "yandex_vpc_subnet" "default-ru-central1-a" {
 }
 
 resource "yandex_iam_service_account" "cluster-test" {
- name        = cluster-test
+ name        = "cluster-test"
  description = "Main cluster SA"
 }
 
