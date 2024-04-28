@@ -16,5 +16,5 @@ provider "yandex" {
   service_account_key_file = var.YC_SERVICE_ACCOUNT_KEY_FILE
   cloud_id                 = var.cloud_id
   folder_id                = var.folder_id
-  zone                     = "ru-central1-a"
+  zone                     = var.zone_1a
 }

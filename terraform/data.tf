@@ -3,11 +3,7 @@ data "terraform_remote_state" "diploma-test" {
   config = {
     organization = "fenixcorp"
     workspaces = {
-      name = "diploma-test"
+      name = "diploma-${var.environment}"
     }
   }
-}
-
-data "yandex_compute_image" "my_image" {
-  family = var.image_family
 }

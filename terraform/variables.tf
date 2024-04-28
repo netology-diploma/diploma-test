@@ -22,7 +22,57 @@ variable "environment" {
   type    = string
 }
 
-variable "image_family" {
+variable "zone_1a" {
   type    = string
-  default = "ubuntu-2004-lts"
+  default = "ru-central1-a"
+}
+
+variable "zone_1b" {
+  type    = string
+  default = "ru-central1-b"
+}
+variable "zone_1c" {
+  type    = string
+  default = "ru-central1-c"
+}
+
+variable "zone_1d" {
+  type    = string
+  default = "ru-central1-d"
+}
+
+variable "public_cidr_1a" {
+  type    = list(string)
+  default = ["10.0.11.0/24"]
+}
+variable "public_cidr_1b" {
+  type    = list(string)
+  default = ["10.0.12.0/24"]
+}
+variable "public_cidr_1c" {
+  type    = list(string)
+  default = ["10.0.13.0/24"]
+}
+
+variable "public_cidr_1d" {
+  type    = list(string)
+  default = ["10.0.14.0/24"]
+}
+
+variable "client_network" {
+  type    = list(string)
+  default = [
+    "46.188.123.160/32",
+    "164.90.169.22/32"
+  ]
+}
+
+variable "node_image_id" {
+  type    = string
+  default = "fd8jriet4mkponbhe021"
+}
+
+variable "node_resources" {
+  type = map(number)
+  default  = { cores = "2", memory = "4", core_fraction = "5" }
 }
