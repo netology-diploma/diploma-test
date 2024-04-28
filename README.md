@@ -5,7 +5,7 @@
 - VPC с подсетями во всех зонах доступности создаются в [network.tf](terraform/network.tf), там же группы безопасности для кластера.  
 - В pull-request еще до слияния с веткой main по которой настроен запуск Run в Terraform Cloud сразу можно просмотреть plan и подправить ошибки.  
 ![not done :(](img/diploma_01.png)  
-- После правки можно и Merge.  
+- Если все проверки прошли успешно, "мержим" в main.  
 ![complete](img/diploma_02.png)  
 - Результат - запуск Run в Terraform Cloud и создание объектов в Yandex Cloud.  
 ![plan applied](img/diploma_03.png)  
