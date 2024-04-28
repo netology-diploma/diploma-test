@@ -4,25 +4,25 @@ resource "yandex_vpc_network" "kuber-network" {
 
 resource "yandex_vpc_subnet" "public-subnet-1a" {
   zone           = var.zone_1a
-  v4_cidr_blocks = [var.public_cidr_1a]
+  v4_cidr_blocks = var.public_cidr_1a
   network_id     = yandex_vpc_network.kuber-network.id
 }
 
 resource "yandex_vpc_subnet" "public-subnet-1b" {
   zone           = var.zone_1b
-  v4_cidr_blocks = [var.public_cidr_1b]
+  v4_cidr_blocks = var.public_cidr_1b
   network_id     = yandex_vpc_network.kuber-network.id
 }
 
 resource "yandex_vpc_subnet" "public-subnet-1c" {
   zone           = var.zone_1c
-  v4_cidr_blocks = [var.public_cidr_1c]
+  v4_cidr_blocks = var.public_cidr_1c
   network_id     = yandex_vpc_network.kuber-network.id
 }
 
 resource "yandex_vpc_subnet" "public-subnet-1d" {
   zone           = var.zone_1d
-  v4_cidr_blocks = [var.public_cidr_1d]
+  v4_cidr_blocks = var.public_cidr_1d
   network_id     = yandex_vpc_network.kuber-network.id
 }
 
@@ -80,14 +80,14 @@ resource "yandex_vpc_security_group" "k8s-master-whitelist" {
   ingress {
     protocol       = "TCP"
     description    = "Правило разрешает подключение к API Kubernetes через порт 6443 из указанной сети."
-    v4_cidr_blocks = [var.client_network]
+    v4_cidr_blocks = var.client_network
     port           = 6443
   }
 
   ingress {
     protocol       = "TCP"
     description    = "Правило разрешает подключение к API Kubernetes через порт 443 из указанной сети."
-    v4_cidr_blocks = [var.client_network]
+    v4_cidr_blocks = var.client_network
     port           = 443
   }
 }
