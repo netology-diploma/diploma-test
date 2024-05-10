@@ -52,3 +52,7 @@ resource "yandex_mdb_mysql_user" "clopro-user" {
     roles         = ["ALL"]
   }
 }
+
+output "mysql_host" {
+  value = yandex_mdb_mysql_cluster.mysql.host
+}
