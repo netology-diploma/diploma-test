@@ -4,7 +4,7 @@ resource "yandex_kubernetes_cluster" "diploma" {
 
   master {
     regional {
-      region = var.zone_1a
+      region = "ru-central1"
       location {
         zone      = yandex_vpc_subnet.public-subnet-1a.zone
         subnet_id = yandex_vpc_subnet.public-subnet-1a.id
