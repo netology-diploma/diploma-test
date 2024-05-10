@@ -83,7 +83,7 @@ resource "yandex_kubernetes_node_group" "diploma-nodes" {
     network_acceleration_type = "standard"
 
     scheduling_policy {
-      preemptible = alltrue()
+      preemptible = true
     }
 
     container_runtime {
