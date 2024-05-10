@@ -53,6 +53,12 @@ resource "yandex_kubernetes_node_group" "diploma-nodes" {
   cluster_id    = yandex_kubernetes_cluster.diploma.id
   name          = "nodes-diploma-${var.environment}"
 
+  allocation_policy {
+    location {
+      zone = var.zone_1a
+    }
+  }
+
   instance_template {
     name        = "${var.environment}-{instance.short_id}"
     platform_id = "standard-v2"
@@ -70,11 +76,7 @@ resource "yandex_kubernetes_node_group" "diploma-nodes" {
 
     network_interface {
       nat                = false
-      subnet_ids         = [
-        yandex_vpc_subnet.public-subnet-1a.id,
-        yandex_vpc_subnet.public-subnet-1b.id,
-        yandex_vpc_subnet.public-subnet-1d.id
-      ]
+      subnet_ids         = [yandex_vpc_subnet.public-subnet-1a.id]
       security_group_ids = [
         yandex_vpc_security_group.k8s-public-services.id
       ]
