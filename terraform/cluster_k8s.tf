@@ -77,9 +77,7 @@ resource "yandex_kubernetes_node_group" "diploma-nodes" {
     network_interface {
       nat                = false
       subnet_ids         = [yandex_vpc_subnet.public-subnet-1a.id]
-      security_group_ids = [
-        yandex_vpc_security_group.k8s-public-services.id
-      ]
+      security_group_ids = [yandex_vpc_security_group.k8s-public-services.id]
     }
 
     network_acceleration_type = "standard"
