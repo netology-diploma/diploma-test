@@ -48,11 +48,6 @@ resource "yandex_vpc_security_group" "mysql-sg" {
     description    = "MySQL"
     port           = 3306
     protocol       = "TCP"
-    v4_cidr_blocks = [
-      yandex_vpc_subnet.public-subnet-1a.v4_cidr_blocks,
-      yandex_vpc_subnet.public-subnet-1b.v4_cidr_blocks,
-      yandex_vpc_subnet.public-subnet-1c.v4_cidr_blocks,
-      yandex_vpc_subnet.public-subnet-1d.v4_cidr_blocks
-    ]
+    v4_cidr_blocks = concat(yandex_vpc_subnet.public-subnet-1a.v4_cidr_blocks, yandex_vpc_subnet.public-subnet-1b.v4_cidr_blocks, yandex_vpc_subnet.public-subnet-1c.v4_cidr_blocks, yandex_vpc_subnet.public-subnet-1d.v4_cidr_blocks)
   }
 }
