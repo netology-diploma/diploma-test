@@ -39,3 +39,20 @@ resource "yandex_vpc_subnet" "private-subnet-1d" {
   v4_cidr_blocks = var.private_cidr_1d
   network_id     = yandex_vpc_network.kuber-network.id
 }
+
+resource "yandex_vpc_security_group" "mysql-sg" {
+  name       = "mysql-sg"
+  network_id = yandex_vpc_network.kuber-network.id
+
+  ingress {
+    description    = "MySQL"
+    port           = 3306
+    protocol       = "TCP"
+    v4_cidr_blocks = [
+      yandex_vpc_subnet.public-subnet-1a.v4_cidr_blocks,
+      yandex_vpc_subnet.public-subnet-1b.v4_cidr_blocks,
+      yandex_vpc_subnet.public-subnet-1c.v4_cidr_blocks,
+      yandex_vpc_subnet.public-subnet-1d.v4_cidr_blocks
+    ]
+  }
+}

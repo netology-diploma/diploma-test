@@ -29,6 +29,8 @@ resource "yandex_mdb_mysql_cluster" "mysql" {
     zone      = var.zone_1b
     subnet_id = yandex_vpc_subnet.private-subnet-1b.id
   }
+
+  security_group_ids = [yandex_vpc_security_group.mysql-sg.id]
 }
 
 resource "yandex_mdb_mysql_database" "clopro" {
