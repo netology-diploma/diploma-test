@@ -18,7 +18,7 @@ resource "yandex_kubernetes_cluster" "diploma" {
         subnet_id = yandex_vpc_subnet.public-subnet-1d.id
       }
     }
-
+    version = "1.27"
     public_ip = true
     security_group_ids = [
       yandex_vpc_security_group.k8s-master-whitelist.id,
@@ -52,6 +52,7 @@ resource "yandex_kubernetes_cluster" "diploma" {
 resource "yandex_kubernetes_node_group" "diploma-nodes" {
   cluster_id    = yandex_kubernetes_cluster.diploma.id
   name          = "nodes-diploma-${var.environment}"
+  version = "1.27"
 
   allocation_policy {
     location {
