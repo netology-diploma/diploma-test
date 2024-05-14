@@ -67,11 +67,6 @@ variable "client_network" {
   ]
 }
 
-variable "node_image_id" {
-  type    = string
-  default = "fd8jriet4mkponbhe021"
-}
-
 variable "node_resources" {
   type = map(number)
   default  = { cores = "2", memory = "4", core_fraction = "5" }
