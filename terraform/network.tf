@@ -6,6 +6,7 @@ resource "yandex_vpc_subnet" "public-subnet-1a" {
   zone           = var.zone_1a
   v4_cidr_blocks = var.public_cidr_1a
   network_id     = yandex_vpc_network.kuber-network.id
+  route_table_id = yandex_vpc_route_table.public-1a.id
 }
 
 resource "yandex_vpc_subnet" "public-subnet-1b" {
@@ -24,6 +25,20 @@ resource "yandex_vpc_subnet" "public-subnet-1d" {
   zone           = var.zone_1d
   v4_cidr_blocks = var.public_cidr_1d
   network_id     = yandex_vpc_network.kuber-network.id
+}
+
+resource "yandex_vpc_gateway" "public-nat" {
+  name      = "NAT-gateway"
+}
+
+resource "yandex_vpc_route_table" "public-1a" {
+  name       = "NAT-gateway"
+  network_id = yandex_vpc_network.kuber-network.id
+
+  static_route {
+    destination_prefix = "0.0.0.0/0"
+    gateway_id         = yandex_vpc_gateway.public-nat.id
+  }
 }
 
 resource "yandex_vpc_security_group" "k8s-public-services" {
