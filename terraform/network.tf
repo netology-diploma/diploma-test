@@ -28,11 +28,11 @@ resource "yandex_vpc_subnet" "public-subnet-1d" {
 }
 
 resource "yandex_vpc_gateway" "public-nat" {
-  name      = "NAT-gateway"
+  name      = "nat-gateway"
 }
 
 resource "yandex_vpc_route_table" "public-1a" {
-  name       = "NAT-gateway"
+  name       = "nat-table"
   network_id = yandex_vpc_network.kuber-network.id
 
   static_route {
