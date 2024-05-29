@@ -2,6 +2,18 @@ resource "yandex_iam_service_account" "cluster-sa" {
  name      = "cluster-sa-${var.environment}"
 }
 
+resource "yandex_resourcemanager_folder_iam_member" "editor" {
+ folder_id = var.folder_id
+ role      = "editor"
+ member    = "serviceAccount:${yandex_iam_service_account.cluster-sa.id}"
+}
+
+resource "yandex_resourcemanager_folder_iam_member" "load-balancer-admin" {
+ folder_id = var.folder_id
+ role      = "load-balancer.admin"
+ member    = "serviceAccount:${yandex_iam_service_account.cluster-sa.id}"
+}
+
 resource "yandex_resourcemanager_folder_iam_member" "k8s-clusters-agent" {
  folder_id = var.folder_id
  role      = "k8s.clusters.agent"
