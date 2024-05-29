@@ -94,9 +94,9 @@ resource "yandex_kubernetes_node_group" "diploma-nodes" {
 
   scale_policy {
     auto_scale {
-      initial = 3
+      initial = 2
       max     = 6
-      min     = 3
+      min     = 2
     }
   }
 }
