@@ -1,5 +1,18 @@
 variable "repository" {
-  default = "git@github.com/netology-diploma/diploma-test"
+  description = "Diploma repository"
+  default     = "diploma-test"
+}
+
+variable "github_token" {
+  description = "GitHub token"
+  sensitive   = true
+  type        = string
+}
+
+variable "github_org" {
+  description = "GitHub organization"
+  type        = string
+  default     = "netology-diploma"
 }
 
 variable "domain" {
