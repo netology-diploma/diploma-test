@@ -10,15 +10,8 @@ resource "github_repository_deploy_key" "flux" {
   read_only  = "false"
 }
 
-resource "github_repository" "diploma-test" {
-  name        = var.repository
-  description = var.repository.description
-  visibility  = "private"
-  auto_init   = true
-}
-
 resource "flux_bootstrap_git" "diploma-test" {
-  depends_on = [github_repository.diploma-test]
+  depends_on = [github_repository_deploy_key.flux]
 
   embedded_manifests = true
   path               = "k8s"
