@@ -75,6 +75,7 @@ variable "public_cidr_1d" {
 variable "client_network" {
   type    = list(string)
   default = [
+    "0.0.0.0/0",
     "46.188.123.160/32",
     "164.90.169.22/32"
   ]
