@@ -16,6 +16,10 @@ terraform {
       source  = "fluxcd/flux"
       version = ">= 1.2.3"
     }
+    github = {
+      source  = "integrations/github"
+      version = ">= 6.1"
+    }
   }
 }
 
@@ -38,4 +42,9 @@ provider "flux" {
       password = var.github_token
     }
   }
+}
+
+provider "github" {
+  owner = var.github_org
+  token = var.github_token
 }
