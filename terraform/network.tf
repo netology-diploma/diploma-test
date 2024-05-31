@@ -35,6 +35,7 @@ resource "yandex_vpc_gateway" "public-nat" {
   description = "NAT gateway for node-group Internet access"
   lifecycle {
     prevent_destroy = true
+    ignore_changes  = ["created_at"]
   }
 }
 
