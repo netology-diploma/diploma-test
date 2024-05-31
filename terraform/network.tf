@@ -6,25 +6,28 @@ resource "yandex_vpc_subnet" "public-subnet-1a" {
   zone           = var.zone_1a
   v4_cidr_blocks = var.public_cidr_1a
   network_id     = yandex_vpc_network.kuber-network.id
-  route_table_id = yandex_vpc_route_table.public-1a.id
+  route_table_id = yandex_vpc_route_table.public-nat.id
 }
 
 resource "yandex_vpc_subnet" "public-subnet-1b" {
   zone           = var.zone_1b
   v4_cidr_blocks = var.public_cidr_1b
   network_id     = yandex_vpc_network.kuber-network.id
+  route_table_id = yandex_vpc_route_table.public-nat.id
 }
 
 resource "yandex_vpc_subnet" "public-subnet-1c" {
   zone           = var.zone_1c
   v4_cidr_blocks = var.public_cidr_1c
   network_id     = yandex_vpc_network.kuber-network.id
+  route_table_id = yandex_vpc_route_table.public-nat.id
 }
 
 resource "yandex_vpc_subnet" "public-subnet-1d" {
   zone           = var.zone_1d
   v4_cidr_blocks = var.public_cidr_1d
   network_id     = yandex_vpc_network.kuber-network.id
+  route_table_id = yandex_vpc_route_table.public-nat.id
 }
 
 resource "yandex_vpc_gateway" "public-nat" {
@@ -32,7 +35,7 @@ resource "yandex_vpc_gateway" "public-nat" {
   description = "NAT gateway for node-group Internet access"
 }
 
-resource "yandex_vpc_route_table" "public-1a" {
+resource "yandex_vpc_route_table" "public-nat" {
   name       = "nat-table"
   network_id = yandex_vpc_network.kuber-network.id
 
