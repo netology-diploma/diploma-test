@@ -32,7 +32,9 @@ resource "yandex_vpc_subnet" "public-subnet-1d" {
 
 resource "yandex_vpc_gateway" "public-nat" {
   name        = "nat-gateway"
+  folder_id   = var.folder_id
   description = "NAT gateway for node-group Internet access"
+  shared_egress_gateway {}
 }
 
 resource "yandex_vpc_route_table" "public-nat" {
