@@ -11,7 +11,10 @@ resource "github_repository_deploy_key" "flux" {
 }
 
 resource "flux_bootstrap_git" "diploma-test" {
-  depends_on = [github_repository_deploy_key.flux]
+  depends_on = [
+    github_repository_deploy_key.flux,
+    yandex_kubernetes_node_group.diploma-nodes
+  ]
 
   embedded_manifests = true
   path               = "k8s"

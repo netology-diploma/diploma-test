@@ -7,3 +7,5 @@ data "terraform_remote_state" "diploma-test" {
     }
   }
 }
+
+data "yandex_client_config" "diploma-test" {}
