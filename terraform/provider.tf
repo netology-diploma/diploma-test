@@ -34,6 +34,7 @@ provider "flux" {
   kubernetes = {
     host                   = yandex_kubernetes_cluster.diploma.master[0].external_v4_endpoint
     cluster_ca_certificate = yandex_kubernetes_cluster.diploma.master[0].cluster_ca_certificate
+    token                  = var.YC_SERVICE_ACCOUNT_KEY_FILE
   }
   git = {
     url = "https://github.com/${var.github_org}/${var.repository}.git"
