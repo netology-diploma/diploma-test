@@ -11,3 +11,11 @@ spec:
   sourceRef:
     kind: GitRepository
     name: podinfo
+  ingress:
+    enabled: true
+    className: ""
+    hosts:
+      - host: podinfo.tasenko.ru
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
