@@ -10,3 +10,10 @@
 - Результат - запуск Run в Terraform Cloud и создание объектов в Yandex Cloud.  
 ![plan applied](img/diploma_03.png)  
 ![infra created](img/diploma_04.png)  
+
+### 2. Запустить и сконфигурировать Kubernetes кластер.  
+Выбрал второй вариант: сервис Yandex Managed Service for Kubernetes и группа узлов.
+- Региональный кластер создается в файле [cluster.tf](terraform/cluster.tf). Использует сервис-аккаунт созданный ранее.    
+- После создания и инициализации файла конфига для подключения ```kubectl get pods -A``` отрабатывает без ошибок.  
+![k8s done](img/diploma_05.png)  
+
