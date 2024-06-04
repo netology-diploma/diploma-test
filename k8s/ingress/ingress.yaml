@@ -17,3 +17,6 @@ spec:
     ingress:
       enabled: true
       className: nginx
+    controller:
+      publishService:
+        enabled: true
