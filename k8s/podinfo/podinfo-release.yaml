@@ -15,7 +15,7 @@ spec:
   interval: 15m
   timeout: 5m
   releaseName: podinfo
-  #valuesFrom:
-  #- kind: ConfigMap
-  #  name: podinfo-value-overrides
-  #  valuesKey: values.yaml # This is the default, but best to be explicit for clarity
+  valuesFrom:
+  - kind: ConfigMap
+    name: podinfo-value-overrides
+    valuesKey: values.yaml # This is the default, but best to be explicit for clarity
