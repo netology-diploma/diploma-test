@@ -10,8 +10,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  #healthChecks:
-  #  - apiVersion: apps/v1
-  #    kind: Deployment
-  #    name: podinfo
-  #    namespace: podinfo
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: podinfo
+      namespace: podinfo
