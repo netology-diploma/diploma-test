@@ -5,17 +5,8 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m0s
-  path: ./kustomize
+  path: podinfo
   prune: true
-  targetNamespace: kube-system
   sourceRef:
     kind: GitRepository
     name: podinfo
-  ingress:
-    enabled: true
-    className: ""
-    hosts:
-      - host: podinfo.tasenko.ru
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
