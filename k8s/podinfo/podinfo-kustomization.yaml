@@ -8,5 +8,5 @@ spec:
   path: podinfo
   prune: true
   sourceRef:
-    kind: HelmRepository
+    kind: GitRepository
     name: podinfo
