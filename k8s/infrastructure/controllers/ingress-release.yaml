@@ -13,10 +13,3 @@ spec:
         name: ingress-nginx
         namespace: ingress-nginx
   interval: 50m
-  values:
-    ingress:
-      enabled: true
-      className: nginx
-    controller:
-      publishService:
-        enabled: true
