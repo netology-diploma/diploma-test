@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ingress-nginx
-  namespace: default
+  namespace: ingress-nginx
 spec:
   releaseName: ingress-nginx
   chart:
@@ -11,7 +11,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx
-        namespace: default
+        namespace: ingress-nginx
   interval: 50m
   values:
     ingress:
