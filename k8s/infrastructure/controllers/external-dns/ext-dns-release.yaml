@@ -14,6 +14,10 @@ spec:
         namespace: external-dns
       provider:
         name: cloudflare
-      cloudflare:
-        apiToken: CF_API_TOKEN
+      env:
+        - name: CF_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api-key
+              key: apiKey
   interval: 50m
