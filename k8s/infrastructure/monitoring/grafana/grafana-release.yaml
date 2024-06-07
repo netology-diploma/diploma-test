@@ -1,15 +1,15 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: prometheus
+  name: grafana
   namespace: monitoring
 spec:
-  releaseName: prometheus
+  releaseName: grafana
   interval: 15m
   chart:
     spec:
-      chart: prometheus
+      chart: grafana
       sourceRef:
         kind: HelmRepository
-        name: prometheus
+        name: grafana
         namespace: monitoring
