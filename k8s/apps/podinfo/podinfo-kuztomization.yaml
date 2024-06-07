@@ -7,9 +7,6 @@ spec:
   interval: 5m
   prune: true # remove any elements later removed from the above path
   timeout: 2m # if not set, this defaults to interval duration, which is 1h
-  sourceRef:
-    kind: GitRepository
-    name: podinfo
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment
