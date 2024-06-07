@@ -23,9 +23,12 @@ spec:
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/rewrite-target: /
         cert-manager.io/cluster-issuer: letsencrypt-staging
-      hosts:
-        - host: podinfo.tasenko.ru
       tls:
-      - secretName: letsencrypt-staging
-        hosts:
-        - podinfo.tasenko.ru
+        - hosts:
+            - podinfo.tasenko.ru
+          secretName: letsencrypt-prod
+      rules:
+        - host: podinfo.tasenko.ru
+          http:
+            paths:
+              - path: /
