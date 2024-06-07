@@ -23,6 +23,10 @@ variable "YC_SERVICE_ACCOUNT_KEY_FILE" {
   type    = string
 }
 
+variable "CF_API_TOKEN" {
+  type    = string
+}
+
 variable "cloud_id" {
   type    = string
 }
