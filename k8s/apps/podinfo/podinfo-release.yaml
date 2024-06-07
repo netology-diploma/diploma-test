@@ -28,9 +28,7 @@ spec:
             - podinfo.tasenko.ru
           secretName: letsencrypt-prod
       hosts:
-      - host: podinfo.tasenko.ru
-        rules:
         - host: podinfo.tasenko.ru
-          http:
-            paths:
-              - path: /
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
