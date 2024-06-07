@@ -12,6 +12,7 @@ spec:
     - selector:
         dnsZones:
           - "tasenko.ru"
+          - "nginx.tasenko.ru"
       dns01:
         cloudflare:
           apiTokenSecretRef:
