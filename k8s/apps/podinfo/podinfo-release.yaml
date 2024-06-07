@@ -25,6 +25,8 @@ spec:
         cert-manager.io/cluster-issuer: letsencrypt-staging
       hosts:
         - host: "podinfo.tasenko.ru"
+          paths:
+            path: /
     tls:
     - secretName: letsencrypt-staging
       hosts:
