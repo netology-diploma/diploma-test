@@ -16,7 +16,6 @@ spec:
   values:
     ingress:
       enabled: true
-      className: "nginx"
       annotations:
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/rewrite-target: /
@@ -26,7 +25,5 @@ spec:
             - grafana.tasenko.ru
           secretName: letsencrypt-prod
       hosts:
-        - host: grafana.tasenko.ru
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
+        - grafana.tasenko.ru
+      path: /
