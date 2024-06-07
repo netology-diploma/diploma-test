@@ -6,3 +6,12 @@ metadata:
 spec:
   interval: 30s
   url: https://stefanprodan.github.io/podinfo
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: podinfo
+  namespace:
+spec:
+  interval: 5m
+  url: https://github.com/netology-diploma/diploma-test
