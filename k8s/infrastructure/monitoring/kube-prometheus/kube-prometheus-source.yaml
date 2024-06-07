@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: kube-prometheus
+  namespace: monitoring
+spec:
+  interval: 24h
+  url: https://github.com/prometheus-operator/kube-prometheus
