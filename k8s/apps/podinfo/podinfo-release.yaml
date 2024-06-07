@@ -27,7 +27,7 @@ spec:
         - host: "podinfo.tasenko.ru"
           paths:
             path: /
-    tls:
-    - secretName: letsencrypt-staging
-      hosts:
-        - podinfo.tasenko.ru
+  #  tls:
+  #  - secretName: letsencrypt-staging
+  #    hosts:
+  #      - podinfo.tasenko.ru
