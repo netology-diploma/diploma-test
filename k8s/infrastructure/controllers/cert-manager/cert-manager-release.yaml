@@ -4,8 +4,6 @@ metadata:
   name: cert-manager
   namespace: cert-manager
 spec:
-  dependsOn:
-    - name: external-dns
   releaseName: cert-manager
   interval: 15m
   chart:
