@@ -10,6 +10,6 @@ spec:
     spec:
       chart: kube-prometheus
       sourceRef:
-        kind: OCIRepository
+        kind: HelmRepository
         name: kube-prometheus
         namespace: monitoring
