@@ -1,8 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
-metadata:
-  name: kube-prometheus
-  namespace: monitoring
-spec:
-  interval: 24h
-  url: oci://registry-1.docker.io/bitnamicharts/kube-prometheus
