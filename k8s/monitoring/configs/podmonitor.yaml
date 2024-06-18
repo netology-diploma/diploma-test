@@ -6,6 +6,8 @@ metadata:
     app.kubernetes.io/part-of: flux
     app.kubernetes.io/component: monitoring
 spec:
+  dependsOn:
+    - name: kube-prometheus-stack
   namespaceSelector:
     matchNames:
       - flux-system
