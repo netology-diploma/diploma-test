@@ -20,10 +20,6 @@ terraform {
       source  = "integrations/github"
       version = ">= 6.1"
     }
-    kubeseal = {
-      source = "kita99/kubeseal"
-      version = "0.1.0"
-    }
   }
 }
 
@@ -52,7 +48,4 @@ provider "flux" {
 provider "github" {
   owner = var.github_org
   token = var.github_token
-}
-
-provider "kubeseal" {
 }
