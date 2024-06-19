@@ -17,5 +17,5 @@ resource "flux_bootstrap_git" "diploma-test" {
   ]
 
   embedded_manifests = true
-  path               = "k8s"
+  path               = "clusters/test"
 }
