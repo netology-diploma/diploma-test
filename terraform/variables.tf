@@ -1,6 +1,6 @@
 variable "repository" {
   description = "Diploma repository"
-  default     = "diploma-test"
+  default     = "diploma-test-app"
 }
 
 variable "github_token" {
