@@ -31,5 +31,14 @@
 Следующим шагом применяю манифест [ClusterIssuer](https://github.com/netology-diploma/diploma-test-app/tree/main/infrastructure/issuers) и [кастомизацию](https://github.com/netology-diploma/diploma-test-app/blob/main/clusters/test/issuers.yaml), модифицирую файл релиза [kube-prometheus-stack](https://github.com/netology-diploma/diploma-test-app/blob/main/monitoring/controllers/kube-prometheus-stack/release.yaml) добавив туда блок Ingress для Grafana. Спустя некоторое время Grafana отвечает по адресу https://grafana.tasenko.ru/ с доверенным сертификатом.  
 ![cluster-stats](img/diploma_06.png)  
 ![control-plane](img/diploma_07.png)  
+Добавил еще щепотку зависимостей и теперь вся инфраструктура и готовый кластер стартуют по одному коммиту или ручному запуску ```terraform apply```. Развертывание external-dns стопорится из-за отсутствия секрета. После создания и применения секрета (и ручного удаления релиза для ускорения процесса) Flux применяет кастомизации заново и инфраструктура готова.  
 
-### 4. Тут будет создание Dockerfile приложения, сборка образа, HelmRelease, публикация в registry и деплой. 
+### 4. Подготовка и деплой тестового приложения, сборка образа при помощи GitHub Actions.  
+В качестве тестового приложения взял fork JavaScript приложения с которым я уже когда-то работал - [Flatris](https://github.com/atasenko/flatris).
+Собрал [Dockerfile](https://github.com/netology-diploma/diploma-test-app/blob/main/apps/flatris/Dockerfile), проверил запуском локально ~~завис минут на 10 в игре~~.  
+Перенес к себе в репозиторий в папку [apps/flatris](https://github.com/netology-diploma/diploma-test-app/tree/main/apps/flatris).  
+Создал Yandex Container Registry в файле [ycr.tf](terraform/ycr.tf), получил отдельный ключ для сервис-аккаунта командой ```yc iam key create --service-account-name cluster-sa -o key.json```, добавил его в качестве секрета YC_SA_JSON_CREDENTIALS в репозиторий GitHub.  
+Создал [workflow](https://github.com/netology-diploma/diploma-test-app/blob/main/.github/workflows/image-publish.yml) для сборки и публикации образов. После тестов оставил сборку только по пушу в main и semver тегам.  
+
+
+Тут будет создание Dockerfile приложения, сборка образа, HelmRelease, публикация в registry и деплой. 
