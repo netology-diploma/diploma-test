@@ -91,6 +91,15 @@ ingress:
 
 ![errors2](img/diploma_11.png)
 
+Сначала я не использовал авторизацию в манифесте OCIRepository flatris-source.yaml, репозитории ведь доступны публично и работают при запуске ```helm install``` вручную. Пытался брать чарты из GitHub Registry, получал такую же ошибку что и сейчас с DockerHub. Создал секрет с именем пользователя и токеном в качестве пароля как описано в [документации](oci://registry-1.docker.io):  
+
+```
+flux create secret oci dockerhub-auth -n flatris --url=registry-1.docker.io --username=<username> --password=<token> --export > _unencrypted_docker-auth.yaml
+```
+Зашифровал sealed-secrets, добавил в кластер, но ситуация не изменилась.  
+Смотрю в сторону установки собственного https сервера для Helm repository :)  
+
+
 ### Список ручных операций при запуске:
 - Получить ID YCR, вписать в [workflow публикации docker image](https://github.com/netology-diploma/diploma-test-app/blob/main/.github/workflows/image-publish.yml).
 - Этот же ID переписать в файле [values.yaml](https://github.com/netology-diploma/diploma-test-app/blob/main/charts/flatris/values.yaml) чарта, значение image.repository. Сгенерировать новый чарт в репозитории пушем в ветку helm-chart-update.   
