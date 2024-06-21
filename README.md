@@ -87,7 +87,9 @@ ingress:
 - [Кастомизацию](https://github.com/netology-diploma/diploma-test-app/blob/main/clusters/test/flatris.yaml) чтоб указать на всё это флаксу и...  Ничего не работает.  
 - После обновления получаю вечно обновляющийся Kustomization, вечно в ошибке Helmrelease и отсутствие доступа к репозиторию чарта:  
 
+![errors1](img/diploma_10.png)
 
+![errors2](img/diploma_11.png)
 
 ### Список ручных операций при запуске:
 - Получить ID YCR, вписать в [workflow публикации docker image](https://github.com/netology-diploma/diploma-test-app/blob/main/.github/workflows/image-publish.yml).
