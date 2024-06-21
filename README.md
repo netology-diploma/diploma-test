@@ -4,10 +4,15 @@
 - Бэкенд для Terraform подготовил в Terraform Cloud. Описан в файле [provider.tf](terraform/provider.tf), там же указаны переменные с секретами для доступа к облаку. Сами секреты сохранены в безопасных переменных Terraform Cloud.  
 - VPC с подсетями во всех зонах доступности создаются в [network.tf](terraform/network.tf), там же группы безопасности для кластера, шлюз и правило NAT для доступа группы узлов в Интернет.  
 - В pull-request еще до слияния с веткой main по которой настроен запуск Run в Terraform Cloud сразу можно просмотреть plan и подправить ошибки.  
+
 ![not done :(](img/diploma_01.png)  
+
 - Если все проверки прошли успешно, "мержим" в main.  
+
 ![complete](img/diploma_02.png)  
+
 - Результат - запуск Run в Terraform Cloud и создание объектов в Yandex Cloud.  
+
 ![plan applied](img/diploma_03.png)  
 ![infra created](img/diploma_04.png)  
 
@@ -15,6 +20,7 @@
 Выбрал второй вариант: сервис Yandex Managed Service for Kubernetes и группа узлов.
 - Региональный кластер создается в файле [cluster.tf](terraform/cluster.tf). Использует сервис-аккаунт созданный ранее.    
 - После создания и инициализации файла конфига для подключения ```kubectl get pods -A``` отрабатывает без ошибок.  
+
 ![k8s done](img/diploma_05.png)  
 
 ### 3. Тут всё идёт не по плану. Запуск CD системы, основных контроллеров и мониторинга вместе с инициализацией кластера.  
@@ -26,19 +32,69 @@
 Сразу после запуска (был установлен сам flux в одноименный namespace и инструменты мониторинга: kube-prometheus-stack, loki-stack, включена grafana (с паролем в открытом виде, да, его предстоит спрятать в сгенерированный секрет).  
 Затем добавил cert-manager, external-dns, ingress-nginx и sealed-secrets для хранения API-токена панели управления Cloudflare где находится мой домен tasenko.ru. Всё это в папке [infrastructure](https://github.com/netology-diploma/diploma-test-app/tree/main/infrastructure/controllers), kustomization файл [здесь](https://github.com/netology-diploma/diploma-test-app/blob/main/clusters/test/controllers.yaml).  
 К сожалению, не нашел простого и надежного способа спрятать секрет (API-токен Cloudflare) в переменных Terraform Cloud или GitHub и корректно передать его в манифест. Поэтому создание токена требует ручного запуска команд для специально подготовленного файла секрета:
+
 ```kubeseal -f .\_unencrypted_cloudflare-api-token.yaml -w cloudflare-api-token.yaml --controller-namespace sealed-secrets --controller-name sealed-secrets```
 ```k apply -f .\cloudflare-api-token.yaml```
-Следующим шагом применяю манифест [ClusterIssuer](https://github.com/netology-diploma/diploma-test-app/tree/main/infrastructure/issuers) и [кастомизацию](https://github.com/netology-diploma/diploma-test-app/blob/main/clusters/test/issuers.yaml), модифицирую файл релиза [kube-prometheus-stack](https://github.com/netology-diploma/diploma-test-app/blob/main/monitoring/controllers/kube-prometheus-stack/release.yaml) добавив туда блок Ingress для Grafana. Спустя некоторое время Grafana отвечает по адресу https://grafana.tasenko.ru/ с доверенным сертификатом.  
+
+- Следующим шагом применяю манифест [ClusterIssuer](https://github.com/netology-diploma/diploma-test-app/tree/main/infrastructure/issuers) и [кастомизацию](https://github.com/netology-diploma/diploma-test-app/blob/main/clusters/test/issuers.yaml), модифицирую файл релиза [kube-prometheus-stack](https://github.com/netology-diploma/diploma-test-app/blob/main/monitoring/controllers/kube-prometheus-stack/release.yaml) добавив туда блок Ingress для Grafana. Спустя некоторое время Grafana отвечает по адресу ~~https://grafana.tasenko.ru/~~ https://monitoring.tasenko.ru с доверенным сертификатом. Слишком часто генерировал сертификаты, уперся в лимит LE для домена.  
+
 ![cluster-stats](img/diploma_06.png)  
 ![control-plane](img/diploma_07.png)  
-Добавил еще щепотку зависимостей и теперь вся инфраструктура и готовый кластер стартуют по одному коммиту или ручному запуску ```terraform apply```. Развертывание external-dns стопорится из-за отсутствия секрета. После создания и применения секрета (и ручного удаления релиза для ускорения процесса) Flux применяет кастомизации заново и инфраструктура готова.  
+
+- Добавил еще щепотку зависимостей и теперь вся инфраструктура и готовый кластер стартуют по одному коммиту или ручному запуску ```terraform apply```. Развертывание external-dns стопорится из-за отсутствия секрета. После создания и применения секрета (и ручного удаления релиза для ускорения процесса) Flux применяет кастомизации заново и инфраструктура готова.  
 
 ### 4. Подготовка и деплой тестового приложения, сборка образа при помощи GitHub Actions.  
 В качестве тестового приложения взял fork JavaScript приложения с которым я уже когда-то работал - [Flatris](https://github.com/atasenko/flatris).
-Собрал [Dockerfile](https://github.com/netology-diploma/diploma-test-app/blob/main/apps/flatris/Dockerfile), проверил запуском локально ~~завис минут на 10 в игре~~.  
-Перенес к себе в репозиторий в папку [apps/flatris](https://github.com/netology-diploma/diploma-test-app/tree/main/apps/flatris).  
-Создал Yandex Container Registry в файле [ycr.tf](terraform/ycr.tf), получил отдельный ключ для сервис-аккаунта командой ```yc iam key create --service-account-name cluster-sa -o key.json```, добавил его в качестве секрета YC_SA_JSON_CREDENTIALS в репозиторий GitHub.  
-Создал [workflow](https://github.com/netology-diploma/diploma-test-app/blob/main/.github/workflows/image-publish.yml) для сборки и публикации образов. После тестов оставил сборку только по пушу в main и semver тегам.  
+- Собрал [Dockerfile](https://github.com/netology-diploma/diploma-test-app/blob/main/apps/flatris/Dockerfile), проверил запуском локально ~~завис минут на 10 в игре~~.  
+- Перенес к себе в репозиторий в папку [apps/flatris](https://github.com/netology-diploma/diploma-test-app/tree/main/apps/flatris).  
+- Создал Yandex Container Registry в файле [ycr.tf](terraform/ycr.tf), получил отдельный ключ для сервис-аккаунта командой ```yc iam key create --service-account-name cluster-sa-test -o key.json```, добавил его в качестве секрета YC_SA_JSON_CREDENTIALS в репозиторий GitHub.  
+- Создал [workflow](https://github.com/netology-diploma/diploma-test-app/blob/main/.github/workflows/image-publish.yml) для сборки и публикации образов. После тестов оставил сборку только по пушу в main и semver тегам, добавил второй тег latest.  
+Образ собирается, теги присваиваются:  
+
+- ![two tags](img/diploma_08.png)
+
+### 5. Создание чарта, релиза, деплой.  
+- Создал шаблон чарта запуском ```helm create flatris```, переписал под свои нужды файлы [Chart.yaml](https://github.com/netology-diploma/diploma-test-app/blob/main/charts/flatris/Chart.yaml) и [values.yaml](https://github.com/netology-diploma/diploma-test-app/blob/main/charts/flatris/values.yaml), положил в репозиторий.  
+- Для публикации чарта в хранилище с помощью GitHub Actions написал файлы [chart-publish-ghcr.yml](https://github.com/netology-diploma/diploma-test-app/blob/main/.github/workflows/chart-publish-ghcr.yml) и [chart-publish-dockerhub.yml](https://github.com/netology-diploma/diploma-test-app/blob/main/.github/workflows/chart-publish-dockerhub.yml). Каждый публикует чарты по пушу в свою ветку. Зачем два? Об этом дальше.  
+- Для проверки пишу файл values.yaml следующего содержания и выполняю на работающем кластере ручную установку:  
+
+```
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: flatris.tasenko.ru
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: letsencrypt-prod
+      hosts:
+        - flatris.tasenko.ru
+```
+
+```helm install flatris oci://registry-1.docker.io/fenixad/flatris -f values.yaml -n flatris```  
+
+Получаю работоспособное приложение.  
+
+![tada](img/diploma_09.png)
+
+- Осталось написать манифесты для автоматического деплоя средствами Flux и тут я надолго застрял.  
+- Пишу [flatris-namespace.yaml](https://github.com/netology-diploma/diploma-test-app/blob/main/deploy-apps/flatris/flatris-namespace.yaml), [flatris-source.yaml](https://github.com/netology-diploma/diploma-test-app/blob/main/deploy-apps/flatris/flatris-source.yaml) и [flatris-release.yaml](https://github.com/netology-diploma/diploma-test-app/blob/main/deploy-apps/flatris/flatris-release.yaml)  
+- [Кастомизацию](https://github.com/netology-diploma/diploma-test-app/blob/main/clusters/test/flatris.yaml) чтоб указать на всё это флаксу и...  Ничего не работает.  
+- После обновления получаю вечно обновляющийся Kustomization, вечно в ошибке Helmrelease и отсутствие доступа к репозиторию чарта:  
 
 
-Тут будет создание Dockerfile приложения, сборка образа, HelmRelease, публикация в registry и деплой. 
+
+### Список ручных операций при запуске:
+- Получить ID YCR, вписать в [workflow публикации docker image](https://github.com/netology-diploma/diploma-test-app/blob/main/.github/workflows/image-publish.yml).
+- Этот же ID переписать в файле [values.yaml](https://github.com/netology-diploma/diploma-test-app/blob/main/charts/flatris/values.yaml) чарта, значение image.repository. Сгенерировать новый чарт в репозитории пушем в ветку helm-chart-update.   
+- Сгенерировать ключ для сервис-аккаунта, добавить/заменить секрет для доступа к YCR в GitHub.   
+- Дождаться старта кластера, подключиться к нему, после старта sealed-secrets сгенерировать секрет API-токена Cloudflare, добавить в кластер.  
+- Пуш с semver тегом в main для публикации docker image.  
+- Пуш в ветку helm-chart-update или helm-chart-update-docker для публикации чарта с измененным адресом docker image.  
+Всё остальное разворачивается автоматически по пушу в ветку terraform или кнопке New run в Terraform Cloud.
+ 
