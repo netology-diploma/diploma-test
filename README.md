@@ -97,7 +97,30 @@ ingress:
 flux create secret oci dockerhub-auth -n flatris --url=registry-1.docker.io --username=<username> --password=<token> --export > _unencrypted_docker-auth.yaml
 ```
 Зашифровал sealed-secrets, добавил в кластер, но ситуация не изменилась.  
-Смотрю в сторону установки собственного https сервера для Helm repository :)  
+
+### Обновление от 22.06.2024  
+Снова взялся за эту задачу. Подумал (и не ошибся) что мог напутать в секрете.  
+Запустил инфраструктуру, обновил ID YCR, ключ сервис-аккаунта, секрет external-dns. Запушил новый docker image и чарт в ghcr.io.  
+Сгенерировал новый GitHub access token с доступом к репозиторию и registry, вложил в секрет следующего вида:  
+```
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: ghcr-auth
+  namespace: flatris
+stringData:
+  username: <username>
+  password: <token>
+```
+
+Зашифровал через sealed-secrets и отправил в кластер.  
+Насколько я понимаю, проблема авторизации решена, но чарт все равно не разворачивается, теперь с такой ошибкой:  
+
+![manifest unknown](img/diploma_12.png)
+
+Пытаюсь открыть https://ghcr.io/v2/netology-diploma/flatris/manifests/latest с авторизацией в браузере или curl чтоб увидеть содержимое и продвинуться дальше.  
 
 
 ### Список ручных операций при запуске:
@@ -105,6 +128,7 @@ flux create secret oci dockerhub-auth -n flatris --url=registry-1.docker.io --us
 - Этот же ID переписать в файле [values.yaml](https://github.com/netology-diploma/diploma-test-app/blob/main/charts/flatris/values.yaml) чарта, значение image.repository. Сгенерировать новый чарт в репозитории пушем в ветку helm-chart-update.   
 - Сгенерировать ключ для сервис-аккаунта, добавить/заменить секрет для доступа к YCR в GitHub.   
 - Дождаться старта кластера, подключиться к нему, после старта sealed-secrets сгенерировать секрет API-токена Cloudflare, добавить в кластер.  
+- Сгенерировать и добавить в кластер секрет для GitHub registry.
 - Пуш с semver тегом в main для публикации docker image.  
 - Пуш в ветку helm-chart-update или helm-chart-update-docker для публикации чарта с измененным адресом docker image.  
 Всё остальное разворачивается автоматически по пушу в ветку terraform или кнопке New run в Terraform Cloud.
