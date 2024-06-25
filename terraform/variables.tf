@@ -43,22 +43,22 @@ variable "subnets" {
   type    = list(any)
   default = [
     {
-      name           = public-subnet-1a,
+      name           = "public-subnet-1a",
       zone           = "ru-central1-a",
       v4_cidr_blocks = "10.0.11.0/24"
     },
     {
-      name           = public-subnet-1b,
+      name           = "public-subnet-1b",
       zone           = "ru-central1-b",
       v4_cidr_blocks = "10.0.12.0/24"
     },
     {
-      name           = public-subnet-1c,
+      name           = "public-subnet-1c",
       zone           = "ru-central1-c",
       v4_cidr_blocks = "10.0.13.0/24"
     },
     {
-      name           = public-subnet-1d,
+      name           = "public-subnet-1d",
       zone           = "ru-central1-d",
       v4_cidr_blocks = "10.0.14.0/24"
     }
