@@ -6,7 +6,7 @@ resource "yandex_vpc_subnet" "subnets" {
   for_each = {
     for i, subnet in var.subnets : subnet.name => subnet
   }
-  name           = each.value.name
+  name           = each.key
   zone           = each.value.zone
   v4_cidr_blocks = each.value.v4_cidr_blocks
   network_id     = yandex_vpc_network.kuber-network.id
@@ -51,7 +51,7 @@ resource "yandex_vpc_security_group" "k8s-public-services" {
   ingress {
     protocol          = "ANY"
     description       = "Правило разрешает взаимодействие под-под и сервис-сервис. Укажите подсети вашего кластера Managed Service for Kubernetes и сервисов."
-    v4_cidr_blocks    = concat(yandex_vpc_subnet.subnets.v4_cidr_blocks)
+    v4_cidr_blocks    = concat(yandex_vpc_subnet.subnets[each.key].v4_cidr_blocks)
     from_port         = 0
     to_port           = 65535
   }
