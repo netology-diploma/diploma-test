@@ -44,23 +44,23 @@ variable "subnets" {
   default = [
     {
       name           = public-subnet-1a,
-      zone           = var.zone_1a,
-      v4_cidr_blocks = var.public_cidr_1a
+      zone           = "ru-central1-a",
+      v4_cidr_blocks = "10.0.11.0/24"
     },
     {
       name           = public-subnet-1b,
-      zone           = var.zone_1b,
-      v4_cidr_blocks = var.public_cidr_1b
+      zone           = "ru-central1-b",
+      v4_cidr_blocks = "10.0.12.0/24"
     },
     {
       name           = public-subnet-1c,
-      zone           = var.zone_1c,
-      v4_cidr_blocks = var.public_cidr_1c
+      zone           = "ru-central1-c",
+      v4_cidr_blocks = "10.0.13.0/24"
     },
     {
       name           = public-subnet-1d,
-      zone           = var.zone_1d,
-      v4_cidr_blocks = var.public_cidr_1d
+      zone           = "ru-central1-d",
+      v4_cidr_blocks = "10.0.14.0/24"
     }
   ]
 }
@@ -82,24 +82,6 @@ variable "zone_1c" {
 variable "zone_1d" {
   type    = string
   default = "ru-central1-d"
-}
-
-variable "public_cidr_1a" {
-  type    = list(string)
-  default = ["10.0.11.0/24"]
-}
-variable "public_cidr_1b" {
-  type    = list(string)
-  default = ["10.0.12.0/24"]
-}
-variable "public_cidr_1c" {
-  type    = list(string)
-  default = ["10.0.13.0/24"]
-}
-
-variable "public_cidr_1d" {
-  type    = list(string)
-  default = ["10.0.14.0/24"]
 }
 
 variable "client_network" {
