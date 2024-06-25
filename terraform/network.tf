@@ -2,30 +2,13 @@ resource "yandex_vpc_network" "kuber-network" {
   name = "kuber-${var.environment}"
 }
 
-resource "yandex_vpc_subnet" "public-subnet-1a" {
-  zone           = var.zone_1a
-  v4_cidr_blocks = var.public_cidr_1a
-  network_id     = yandex_vpc_network.kuber-network.id
-  route_table_id = yandex_vpc_route_table.public-nat.id
-}
-
-resource "yandex_vpc_subnet" "public-subnet-1b" {
-  zone           = var.zone_1b
-  v4_cidr_blocks = var.public_cidr_1b
-  network_id     = yandex_vpc_network.kuber-network.id
-  route_table_id = yandex_vpc_route_table.public-nat.id
-}
-
-resource "yandex_vpc_subnet" "public-subnet-1c" {
-  zone           = var.zone_1c
-  v4_cidr_blocks = var.public_cidr_1c
-  network_id     = yandex_vpc_network.kuber-network.id
-  route_table_id = yandex_vpc_route_table.public-nat.id
-}
-
-resource "yandex_vpc_subnet" "public-subnet-1d" {
-  zone           = var.zone_1d
-  v4_cidr_blocks = var.public_cidr_1d
+resource "yandex_vpc_subnet" "subnets" {
+  for_each = {
+    for i, subnet in var.subnets : subnet.name => subnet
+  }
+  name           = each.value.name
+  zone           = each.value.zone
+  v4_cidr_blocks = each.value.v4_cidr_blocks
   network_id     = yandex_vpc_network.kuber-network.id
   route_table_id = yandex_vpc_route_table.public-nat.id
 }

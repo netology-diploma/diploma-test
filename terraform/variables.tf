@@ -39,6 +39,32 @@ variable "environment" {
   type    = string
 }
 
+variable "subnets" {
+  type    = list(any)
+  default = [
+    {
+      name           = public-subnet-1a,
+      zone           = var.zone_1a,
+      v4_cidr_blocks = var.public_cidr_1a
+    },
+    {
+      name           = public-subnet-1b,
+      zone           = var.zone_1b,
+      v4_cidr_blocks = var.public_cidr_1b
+    },
+    {
+      name           = public-subnet-1c,
+      zone           = var.zone_1c,
+      v4_cidr_blocks = var.public_cidr_1c
+    },
+    {
+      name           = public-subnet-1d,
+      zone           = var.zone_1d,
+      v4_cidr_blocks = var.public_cidr_1d
+    }
+  ]
+}
+
 variable "zone_1a" {
   type    = string
   default = "ru-central1-a"
