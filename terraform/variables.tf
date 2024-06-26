@@ -106,7 +106,7 @@ variable "zone_1d" {
 
 # Kubernetes cluster-related variables
 variable "k8s_sa_roles" {
-  type    = list(string)
+  type    = set(string)
   default = [
     "editor",
     "load-balancer.admin",
