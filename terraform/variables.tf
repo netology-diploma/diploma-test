@@ -99,7 +99,7 @@ variable "security_group_ingress_k8s_public" {
   type = list(object(
     {
       protocol          = string
-      description       = string
+      description       = optional(string)
       v4_cidr_blocks    = optional(list(string))
       port              = optional(number)
       from_port         = optional(number)
@@ -110,14 +110,14 @@ variable "security_group_ingress_k8s_public" {
     {
       protocol          = "TCP"
       description       = "Правило разрешает проверки доступности с диапазона адресов балансировщика нагрузки. Нужно для работы отказоустойчивого кластера Managed Service for Kubernetes и сервисов балансировщика."
-      predefined_target = "loadbalancer_healthchecks"
+      #predefined_target = "loadbalancer_healthchecks"
       from_port         = 0
       to_port           = 65535
     },
     {
       protocol          = "ANY"
       description       = "Правило разрешает взаимодействие мастер-узел и узел-узел внутри группы безопасности."
-      predefined_target = "self_security_group"
+      #predefined_target = "self_security_group"
       from_port         = 0
       to_port           = 65535
     },
@@ -147,8 +147,8 @@ variable "security_group_egress_k8s_public" {
   type = list(object(
     {
       protocol          = string
-      description       = string
-      v4_cidr_blocks    = list(string)
+      description       = optional(string)
+      v4_cidr_blocks    = optional(list(string))
       port              = optional(number)
       from_port         = optional(number)
       to_port           = optional(number)

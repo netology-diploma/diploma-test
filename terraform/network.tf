@@ -36,12 +36,12 @@ resource "yandex_vpc_security_group" "k8s-public-services" {
   dynamic "ingress" {
     for_each = var.security_group_ingress_k8s_public
     content {
-      protocol        = lookup(ingress.value, "protocol", null)
-      description     = lookup(ingress.value, "description", null)
-      port            = lookup(ingress.value, "port", null)
-      from_port       = lookup(ingress.value, "from_port", null)
-      to_port         = lookup(ingress.value, "to_port", null)
-      v4_cidr_blocks  = lookup(ingress.value, "v4_cidr_blocks", null)
+      protocol       = lookup(ingress.value, "protocol", null)
+      description    = lookup(ingress.value, "description", null)
+      port           = lookup(ingress.value, "port", null)
+      from_port      = lookup(ingress.value, "from_port", null)
+      to_port        = lookup(ingress.value, "to_port", null)
+      v4_cidr_blocks = lookup(ingress.value, "v4_cidr_blocks", null)
     }
   }
   dynamic "egress" {
