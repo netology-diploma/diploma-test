@@ -1,24 +1,16 @@
 resource "yandex_kubernetes_cluster" "diploma" {
-  name = "yandex-k8s-${var.environment}"
+  name       = "yandex-k8s-${var.environment}"
   network_id = yandex_vpc_network.kuber-network.id
 
   master {
     regional {
       region = var.region
-      location {
-        zone      = yandex_vpc_subnet.subnets[0].zone
-        subnet_id = yandex_vpc_subnet.subnets[0].id
-      }
-      location {
-        zone      = yandex_vpc_subnet.subnets[1].zone
-        subnet_id = yandex_vpc_subnet.subnets[1].id
-      }
-      location {
-        zone      = yandex_vpc_subnet.subnets[2].zone
-        subnet_id = yandex_vpc_subnet.subnets[2].id
-      }
+#      location {
+#        zone      = [for value in yandex_vpc_subnet.subnets: value.zone]
+#        subnet_id = [for value in yandex_vpc_subnet.subnets: value.id]
+#      }
     }
-    version = var.k8s_version
+    version   = var.k8s_version
     public_ip = var.k8s_is_public_ip
     security_group_ids = [
       yandex_vpc_security_group.k8s-master-whitelist.id,
@@ -47,9 +39,9 @@ resource "yandex_kubernetes_cluster" "diploma" {
 }
 
 resource "yandex_kubernetes_node_group" "diploma-nodes" {
-  cluster_id    = yandex_kubernetes_cluster.diploma.id
-  name          = "nodes-diploma-${var.environment}"
-  version = var.k8s_version
+  cluster_id = yandex_kubernetes_cluster.diploma.id
+  name       = "nodes-diploma-${var.environment}"
+  version    = var.k8s_version
 
   allocation_policy {
     location {
@@ -74,7 +66,7 @@ resource "yandex_kubernetes_node_group" "diploma-nodes" {
 
     network_interface {
       nat                = var.node_group_is_nat
-      subnet_ids         = [yandex_vpc_subnet.subnets[0].id]
+      subnet_ids         = [yandex_vpc_subnet.subnets["public-subnet-1a"].id]
       security_group_ids = [yandex_vpc_security_group.k8s-public-services.id]
     }
 
