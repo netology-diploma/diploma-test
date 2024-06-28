@@ -107,13 +107,13 @@ variable "security_group_ingress_k8s_public" {
       predefined_target = optional(string)
       }))
   default = [
-#    {
-#      protocol          = "TCP"
-#      description       = "Правило разрешает проверки доступности с диапазона адресов балансировщика нагрузки. Нужно для работы отказоустойчивого кластера Managed Service for Kubernetes и сервисов балансировщика."
-#      predefined_target = "loadbalancer_healthchecks"
-#      from_port         = 0
-#      to_port           = 65535
-#    },
+    {
+      protocol          = "TCP"
+      description       = "Правило разрешает проверки доступности с диапазона адресов балансировщика нагрузки. Нужно для работы отказоустойчивого кластера Managed Service for Kubernetes и сервисов балансировщика."
+      predefined_target = "loadbalancer_healthchecks"
+      from_port         = 0
+      to_port           = 65535
+    },
     {
       protocol          = "ANY"
       description       = "Правило разрешает взаимодействие мастер-узел и узел-узел внутри группы безопасности."
