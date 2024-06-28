@@ -114,13 +114,13 @@ variable "security_group_ingress_k8s_public" {
 #      from_port         = 0
 #      to_port           = 65535
 #    },
-#    {
-#      protocol          = "ANY"
-#      description       = "Правило разрешает взаимодействие мастер-узел и узел-узел внутри группы безопасности."
-#      predefined_target = "self_security_group"
-#      from_port         = 0
-#      to_port           = 65535
-#    },
+    {
+      protocol          = "ANY"
+      description       = "Правило разрешает взаимодействие мастер-узел и узел-узел внутри группы безопасности."
+      predefined_target = "self_security_group"
+      from_port         = 0
+      to_port           = 65535
+    },
     {
       protocol          = "ANY"
       description       = "Правило разрешает взаимодействие под-под и сервис-сервис. Укажите подсети вашего кластера Managed Service for Kubernetes и сервисов."
