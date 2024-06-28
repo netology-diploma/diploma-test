@@ -1,25 +1,13 @@
 resource "yandex_kubernetes_cluster" "diploma" {
-  name = "yandex-k8s-${var.environment}"
+  name       = "yandex-k8s-${var.environment}"
   network_id = yandex_vpc_network.kuber-network.id
 
   master {
     regional {
-      region = "ru-central1"
-      location {
-        zone      = yandex_vpc_subnet.public-subnet-1a.zone
-        subnet_id = yandex_vpc_subnet.public-subnet-1a.id
-      }
-      location {
-        zone      = yandex_vpc_subnet.public-subnet-1b.zone
-        subnet_id = yandex_vpc_subnet.public-subnet-1b.id
-      }
-      location {
-        zone      = yandex_vpc_subnet.public-subnet-1d.zone
-        subnet_id = yandex_vpc_subnet.public-subnet-1d.id
-      }
+      region = var.region
     }
-    version = "1.28"
-    public_ip = true
+    version   = var.k8s_version
+    public_ip = var.k8s_is_public_ip
     security_group_ids = [
       yandex_vpc_security_group.k8s-master-whitelist.id,
       yandex_vpc_security_group.k8s-public-services.id
@@ -28,9 +16,9 @@ resource "yandex_kubernetes_cluster" "diploma" {
     maintenance_policy {
       auto_upgrade = true
       maintenance_window {
-        day        = "monday"
-        start_time = "23:00"
-        duration   = "3h"
+        day        = var.k8s_maintenance.day
+        start_time = var.k8s_maintenance.start_time
+        duration   = var.k8s_maintenance.duration
       }
     }
   }
@@ -38,10 +26,7 @@ resource "yandex_kubernetes_cluster" "diploma" {
   service_account_id      = yandex_iam_service_account.cluster-sa.id
   node_service_account_id = yandex_iam_service_account.cluster-sa.id
   depends_on = [
-    yandex_resourcemanager_folder_iam_member.k8s-clusters-agent,
-    yandex_resourcemanager_folder_iam_member.vpc-public-admin,
-    yandex_resourcemanager_folder_iam_member.images-puller,
-    yandex_resourcemanager_folder_iam_member.encrypterDecrypter
+    yandex_resourcemanager_folder_iam_member.sa-roles
   ]
 
   kms_provider {
@@ -50,9 +35,9 @@ resource "yandex_kubernetes_cluster" "diploma" {
 }
 
 resource "yandex_kubernetes_node_group" "diploma-nodes" {
-  cluster_id    = yandex_kubernetes_cluster.diploma.id
-  name          = "nodes-diploma-${var.environment}"
-  version = "1.28"
+  cluster_id = yandex_kubernetes_cluster.diploma.id
+  name       = "nodes-diploma-${var.environment}"
+  version    = var.k8s_version
 
   allocation_policy {
     location {
@@ -62,41 +47,41 @@ resource "yandex_kubernetes_node_group" "diploma-nodes" {
 
   instance_template {
     name        = "${var.environment}-{instance.short_id}"
-    platform_id = "standard-v2"
+    platform_id = var.node_group_platform_id
 
     resources {
-      memory        = var.node_resources.memory
-      cores         = var.node_resources.cores
-      core_fraction = var.node_resources.core_fraction
+      memory        = var.node_group_resources.memory
+      cores         = var.node_group_resources.cores
+      core_fraction = var.node_group_resources.core_fraction
     }
 
     boot_disk {
-      type = "network-hdd"
-      size = 64
+      type = var.node_group_boot_disk.type
+      size = var.node_group_boot_disk.size
     }
 
     network_interface {
-      nat                = false
-      subnet_ids         = [yandex_vpc_subnet.public-subnet-1a.id]
+      nat                = var.node_group_is_nat
+      subnet_ids         = [yandex_vpc_subnet.subnets["public-subnet-1a"].id]
       security_group_ids = [yandex_vpc_security_group.k8s-public-services.id]
     }
 
-    network_acceleration_type = "standard"
+    network_acceleration_type = var.node_group_network_acceleration
 
     scheduling_policy {
-      preemptible = true
+      preemptible = var.node_group_scheduling
     }
 
     container_runtime {
-      type = "containerd"
+      type = var.node_group_container_runtime
     }
   }
 
   scale_policy {
     auto_scale {
-      initial = 2
-      max     = 6
-      min     = 2
+      initial = var.node_group_autoscale.initial
+      max     = var.node_group_autoscale.max
+      min     = var.node_group_autoscale.min
     }
   }
 }
