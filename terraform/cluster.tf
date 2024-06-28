@@ -5,10 +5,6 @@ resource "yandex_kubernetes_cluster" "diploma" {
   master {
     regional {
       region = var.region
-#      location {
-#        zone      = [for value in yandex_vpc_subnet.subnets: value.zone]
-#        subnet_id = [for value in yandex_vpc_subnet.subnets: value.id]
-#      }
     }
     version   = var.k8s_version
     public_ip = var.k8s_is_public_ip
